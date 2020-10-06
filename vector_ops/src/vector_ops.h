@@ -190,4 +190,4 @@ namespace task {
 		return c;
 	}
 
-}  // namespace task
+}
