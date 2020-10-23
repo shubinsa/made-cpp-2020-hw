@@ -5,189 +5,164 @@
 #include <cmath>
 
 namespace task {
+  using std::cin;
+  using std::cout;
+  using std::endl;
+  using std::vector;
 
-	using std::cin;
-	using std::cout;
-	using std::endl;
-	using std::vector;
+  vector<double> scanVector() {
+    size_t N;
+    cin >> N;
 
-	vector<double> scan_vec() {
-		size_t N;
-		cin >> N;
+    vector<double> arr(N);
 
-		vector<double> arr;
+    for (size_t i = 0; i < N; ++i) {
+      double x;
+      cin >> x;
+      arr[i] = x;
+    }
 
-		for (size_t i = 0; i < N; ++i) {
-			double x;
-			cin >> x;
-			arr.push_back(x);
-		}
+    return arr;
+  }
 
-		return arr;
-	}
+  void printVector(vector<double> x) {
+    for (size_t i = 0; i < x.size(); ++i) {
+      cout << x[i] << " ";
+    }
+    cout << endl;
+  }
+  vector<double> operator+(const vector<double>& a, const vector<double>& b) {
+    vector<double> c;
 
-	void print_vec(vector<double> x) {
-		for (size_t i = 0; i < x.size(); ++i) {
-			cout << x[i] << " ";
-		}
-		cout << endl;
-	}
-	vector<double> operator+ (
-		const vector<double>& a,
-		const vector<double>& b) {
+    for (size_t i = 0; i < a.size(); ++i)
+      c.push_back(a[i] + b[i]);
 
-		vector<double> c;
+    return c;
+  }
 
-		for (size_t i = 0; i < a.size(); ++i) {
-			c.push_back(a[i] + b[i]);
-		}
-		return c;
-	}
+  vector<double> operator+(const vector<double>& a) {
+    return a;
+  }
 
-	vector<double> operator+ (const vector<double>& a) {
-		return a;
-	}
+  vector<double> operator-(const vector<double>& a, const vector<double>& b) {
+    vector<double> c;
 
-	vector<double> operator- (
-		const vector<double>& a,
-		const vector<double>& b) {
+    for (size_t i = 0; i < a.size(); ++i)
+      c.push_back(a[i] - b[i]);
 
-		vector<double> c;
+    return c;
+  }
 
-		for (size_t i = 0; i < a.size(); ++i) {
-			c.push_back(a[i] - b[i]);
-		}
-		return c;
-	}
+  vector<double> operator-(const vector<double>& a) {
+    vector<double> c;
 
-	vector<double> operator- (const vector<double>& a) {
-		vector<double> c;
-
-		for (size_t i = 0; i < a.size(); ++i) {
-			c.push_back(-a[i]);
-		}
-		return c;
-	}
+    for (size_t i = 0; i < a.size(); ++i) {
+      c.push_back(-a[i]);
+    }
+    return c;
+  }
 
 
-	double operator* (
-		const vector<double>& a,
-		const vector<double>& b) {
+  double operator*(const vector<double>& a, const vector<double>& b) {
+    double c = 0;
 
-		double c = 0;
+    for (size_t i = 0; i < a.size(); ++i)
+      c += a[i] * b[i];
 
-		for (size_t i = 0; i < a.size(); ++i) {
-			c += a[i] * b[i];
-		}
+    return c;
+  }
 
-		return c;
-	}
+  vector<double> operator%(const vector<double>& a, const vector<double>& b) {
+    vector<double> c;
 
-	vector<double> operator% (
-		const vector<double>& a,
-		const vector<double>& b) {
+    int a_x_b_y;
+    int a_y_b_x;
 
-		vector<double> c;
+    a_x_b_y = a[0] * b[1];
+    a_y_b_x = a[1] * b[0];
 
-		int a_x_b_y;
-		int a_y_b_x;
+    c[0] = 0;
+    c[1] = 0;
+    c[2] = a_x_b_y - a_y_b_x;
 
-		a_x_b_y = a[0] * b[1];
-		a_y_b_x = a[1] * b[0];
+    return c;
+  }
 
-		c[0] = 0;
-		c[1] = 0;
-		c[3] = abs(a_x_b_y - a_y_b_x);
+  bool operator||(const vector<double>& a, const vector<double>& b) {
+    vector<double> c;
 
-		return c;
-	}
+    if (a.size() == 0 || b.size() == 0)
+      return true;
 
-	bool operator|| (
-		const vector<double>& a,
-		const vector<double>& b) {
+    for (size_t i = 0; i < a.size() - 1; ++i)
+      if (a[i] / b[i] != a[i + 1] / b[i + 1])
+        return false;
 
-		vector<double> c;
-		for (size_t i = 0; i < a.size() - 1; ++i) {
-			if (a[i] / b[i] != a[i + 1] / b[i + 1]) {
-				return false;
-			}
+    return true;
+  }
 
-		}
+  bool operator&&(const vector<double>& a, const vector<double>& b) {
+    if (a.size() == 0 || b.size() == 0)
+      return true;
 
-		return true;
-	}
+    if ((a[0] / b[0]) < 0)
+      return false;
 
-	bool operator&& (
-		const vector<double>& a,
-		const vector<double>& b) {
+    for (size_t i = 0; i < a.size() - 1; ++i) {
+      if (a[i] / b[i] != a[i + 1] / b[i + 1])
+        return false;
+    }
 
-		if ((a[0] / b[0]) < 0)
-			return false;
-		for (size_t i = 0; i < a.size() - 1; ++i) {
-			if (a[i] / b[i] != a[i + 1] / b[i + 1]) {
-				return false;
-			}
+    return true;
+  }
 
-		}
+  std::istream& operator>>(std::istream& is, vector<double>& a) {
+    int N;
+    is >> N;
 
-		return true;
-	}
+    a.resize(N);
 
-	std::istream& operator>>(std::istream& is, vector<double>& a) {
-		int N;
-		is >> N;
+    for (size_t i = 0; i < N; i++)
+      is >> a[i];
 
-		a.clear();
+    return is;
+  }
 
-		for (int i = 0; i < N; i++) {
-			int  k;
-			is >> k;
-			a.push_back(k);
-		}
+  std::ostream& operator<<(std::ostream& os, const vector<double>& a) {
+    int N = a.size();
 
-		return is;
-	}
+    for (size_t i = 0; i < N; i++)
+      os << a[i] << " ";
 
-	std::ostream& operator<<(std::ostream& os, const vector<double>& a) {
-		int N = a.size();
+    os << endl;
+    return os;
+  }
 
-		for (int i = 0; i < N; i++) {
-			os << a[i] << " ";
-		}
-		os << endl;
-		return os;
-	}
+  vector<double> reverse(const vector<double>& a) {
+    vector<double> b;
 
-	vector<double> reverse(vector<double> a) {
-		vector<double> b;
-		for (size_t i = a.size() - 1; i < -1; --i) {
-			b.push_back(a[i]);
-		}
-		return b;
-	}
+    for (size_t i = a.size(); i > 0; --i)
+      b.push_back(a[i - 1]);
 
-	vector<int> operator| (
-		const vector<int>& a,
-		const vector<int>& b) {
+    return b;
+  }
 
-		vector<int> c;
+  vector<int> operator|(const vector<int>& a, const vector<int>& b) {
+    vector<int> c;
 
-		for (size_t i = 0; i < a.size(); ++i) {
-			c.push_back(a[i] | b[i]);
-		}
-		return c;
-	}
+    for (size_t i = 0; i < a.size(); ++i)
+      c.push_back(a[i] | b[i]);
 
-	vector<int> operator& (
-		const vector<int>& a,
-		const vector<int>& b) {
+    return c;
+  }
 
-		vector<int> c;
+  vector<int> operator&(const vector<int>& a, const vector<int>& b) {
+    vector<int> c;
 
-		for (size_t i = 0; i < a.size(); ++i) {
-			c.push_back(a[i] & b[i]);
-		}
-		return c;
-	}
+    for (size_t i = 0; i < a.size(); ++i)
+      c.push_back(a[i] & b[i]);
+
+    return c;
+  }
 
 }
