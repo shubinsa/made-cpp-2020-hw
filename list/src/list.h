@@ -249,10 +249,10 @@ namespace task {
 			head = alloc.allocate(1);
 			alloc.construct(head, static_cast<node*>(NULL), static_cast<node*>(NULL), other.head->value);
 			node* last = head;
-			for (node* i = other.head->next; i != NULL; i = i->next) { //проход по other
+			for (node* i = other.head->next; i != NULL; i = i->next) { //РїСЂРѕС…РѕРґ РїРѕ other
 				last->next = alloc.allocate(1);
-				alloc.construct(last->next, last, static_cast<node*>(NULL), i->value);	//значение + ссылка вперёд
-				last = last->next;								//обновляем последний
+				alloc.construct(last->next, last, static_cast<node*>(NULL), i->value);	//Р·РЅР°С‡РµРЅРёРµ + СЃСЃС‹Р»РєР° РІРїРµСЂС‘Рґ
+				last = last->next;								//РѕР±РЅРѕРІР»СЏРµРј РїРѕСЃР»РµРґРЅРёР№
 			}
 			tail = last;
 			ssize = other.ssize;
@@ -321,30 +321,30 @@ namespace task {
 	template<class T, class Alloc>
 	typename list<T, Alloc>::iterator  list<T, Alloc>::insert(const_iterator pos, const T& value) {
 		node* p;
-		if (pos.ptr == NULL) {			//вставка в конец
+		if (pos.ptr == NULL) {			//РІСЃС‚Р°РІРєР° РІ РєРѕРЅРµС†
 			p = alloc.allocate(1);
-			if (tail == NULL) {			//если список пуст, обновляем всё
+			if (tail == NULL) {			//РµСЃР»Рё СЃРїРёСЃРѕРє РїСѓСЃС‚, РѕР±РЅРѕРІР»СЏРµРј РІСЃС‘
 				alloc.construct(p, static_cast<node*>(NULL), static_cast<node*>(NULL), value);
 				head = tail = p;
 			}
-			else {						//если список не пуст, вставляем в конец
+			else {						//РµСЃР»Рё СЃРїРёСЃРѕРє РЅРµ РїСѓСЃС‚, РІСЃС‚Р°РІР»СЏРµРј РІ РєРѕРЅРµС†
 				tail->next = p;
 				alloc.construct(p, tail, static_cast<node*>(NULL), value);
 				tail = p;
 			}
 		}
 		else
-			if (head == pos.ptr) {		//если вставка в начало
+			if (head == pos.ptr) {		//РµСЃР»Рё РІСЃС‚Р°РІРєР° РІ РЅР°С‡Р°Р»Рѕ
 				p = alloc.allocate(1);
-				alloc.construct(p, static_cast<node*>(NULL), head, value);	//значение + ссылка вперёд
+				alloc.construct(p, static_cast<node*>(NULL), head, value);	//Р·РЅР°С‡РµРЅРёРµ + СЃСЃС‹Р»РєР° РІРїРµСЂС‘Рґ
 				head->prev = p;
 				head = p;
 			}
 			else {
 				p = alloc.allocate(1);
-				alloc.construct(p, pos.ptr->prev, pos.ptr, value);	//значение + ссылка вперёд
-				p->prev->next = p;	//предыдущий указывает на новый
-				p->next->prev = p;	//следующий тоже
+				alloc.construct(p, pos.ptr->prev, pos.ptr, value);	//Р·РЅР°С‡РµРЅРёРµ + СЃСЃС‹Р»РєР° РІРїРµСЂС‘Рґ
+				p->prev->next = p;	//РїСЂРµРґС‹РґСѓС‰РёР№ СѓРєР°Р·С‹РІР°РµС‚ РЅР° РЅРѕРІС‹Р№
+				p->next->prev = p;	//СЃР»РµРґСѓСЋС‰РёР№ С‚РѕР¶Рµ
 			}
 		++ssize;
 
@@ -354,30 +354,30 @@ namespace task {
 	template<class T, class Alloc>
 	typename list<T, Alloc>::iterator  list<T, Alloc>::insert(const_iterator pos, T&& value) {
 		node* p;
-		if (pos.ptr == NULL) {			//вставка в конец
+		if (pos.ptr == NULL) {			//РІСЃС‚Р°РІРєР° РІ РєРѕРЅРµС†
 			p = alloc.allocate(1);
-			if (tail == NULL) {			//если список пуст, обновляем всё
+			if (tail == NULL) {			//РµСЃР»Рё СЃРїРёСЃРѕРє РїСѓСЃС‚, РѕР±РЅРѕРІР»СЏРµРј РІСЃС‘
 				alloc.construct(p, static_cast<node*>(NULL), static_cast<node*>(NULL), std::forward<T>(value));
 				head = tail = p;
 			}
-			else {						//если список не пуст, вставляем в конец
+			else {						//РµСЃР»Рё СЃРїРёСЃРѕРє РЅРµ РїСѓСЃС‚, РІСЃС‚Р°РІР»СЏРµРј РІ РєРѕРЅРµС†
 				tail->next = p;
 				alloc.construct(p, tail, static_cast<node*>(NULL), std::forward<T>(value));
 				tail = p;
 			}
 		}
 		else
-			if (head == pos.ptr) {		//если вставка в начало
+			if (head == pos.ptr) {		//РµСЃР»Рё РІСЃС‚Р°РІРєР° РІ РЅР°С‡Р°Р»Рѕ
 				p = alloc.allocate(1);
-				alloc.construct(p, static_cast<node*>(NULL), head, value);	//значение + ссылка вперёд
+				alloc.construct(p, static_cast<node*>(NULL), head, value);	//Р·РЅР°С‡РµРЅРёРµ + СЃСЃС‹Р»РєР° РІРїРµСЂС‘Рґ
 				head->prev = p;
 				head = p;
 			}
 			else {
 				p = alloc.allocate(1);
-				alloc.construct(p, pos.ptr->prev, pos.ptr, std::forward<T>(value));	//значение + ссылка вперёд
-				p->prev->next = p;	//предыдущий указывает на новый
-				p->next->prev = p;	//следующий тоже
+				alloc.construct(p, pos.ptr->prev, pos.ptr, std::forward<T>(value));	//Р·РЅР°С‡РµРЅРёРµ + СЃСЃС‹Р»РєР° РІРїРµСЂС‘Рґ
+				p->prev->next = p;	//РїСЂРµРґС‹РґСѓС‰РёР№ СѓРєР°Р·С‹РІР°РµС‚ РЅР° РЅРѕРІС‹Р№
+				p->next->prev = p;	//СЃР»РµРґСѓСЋС‰РёР№ С‚РѕР¶Рµ
 			}
 		++ssize;
 
@@ -399,17 +399,17 @@ namespace task {
 				tail = pair.second;
 			}
 		else
-			if (head == pos.ptr) {		//если вставка в начало
-				pair.second->next = head;		//сцепляем конец c головой
+			if (head == pos.ptr) {		//РµСЃР»Рё РІСЃС‚Р°РІРєР° РІ РЅР°С‡Р°Р»Рѕ
+				pair.second->next = head;		//СЃС†РµРїР»СЏРµРј РєРѕРЅРµС† c РіРѕР»РѕРІРѕР№
 				head->prev = pair.second;
 				head = pair.first;
 			}
 			else {
-				pair.first->prev = pos.ptr->prev;	//сцепляем начало списка
-				pair.second->next = pos.ptr;		//сцепляем конец
+				pair.first->prev = pos.ptr->prev;	//СЃС†РµРїР»СЏРµРј РЅР°С‡Р°Р»Рѕ СЃРїРёСЃРєР°
+				pair.second->next = pos.ptr;		//СЃС†РµРїР»СЏРµРј РєРѕРЅРµС†
 
-				pair.first->prev->next = pair.first;	//предыдущий указывает на новый список (вставленный)
-				pair.second->next->prev = pair.second;	//следующий тоже указывает на него
+				pair.first->prev->next = pair.first;	//РїСЂРµРґС‹РґСѓС‰РёР№ СѓРєР°Р·С‹РІР°РµС‚ РЅР° РЅРѕРІС‹Р№ СЃРїРёСЃРѕРє (РІСЃС‚Р°РІР»РµРЅРЅС‹Р№)
+				pair.second->next->prev = pair.second;	//СЃР»РµРґСѓСЋС‰РёР№ С‚РѕР¶Рµ СѓРєР°Р·С‹РІР°РµС‚ РЅР° РЅРµРіРѕ
 			}
 
 		ssize += count;
@@ -425,8 +425,8 @@ namespace task {
 		node* last = fictive;
 		for (size_t i = 0; i < count; i++) {
 			last->next = alloc.allocate(1);
-			alloc.construct(last->next, last, static_cast<node*>(NULL), value);	//значение + ссылка вперёд
-			last = last->next;							//обновляем последний
+			alloc.construct(last->next, last, static_cast<node*>(NULL), value);	//Р·РЅР°С‡РµРЅРёРµ + СЃСЃС‹Р»РєР° РІРїРµСЂС‘Рґ
+			last = last->next;							//РѕР±РЅРѕРІР»СЏРµРј РїРѕСЃР»РµРґРЅРёР№
 		}
 		chead = fictive->next;
 		alloc.deallocate(fictive, 1);
@@ -442,8 +442,8 @@ namespace task {
 		node* last = fictive;
 		for (size_t i = 0; i < count; i++) {
 			last->next = alloc.allocate(1);
-			alloc.construct(last->next, last, static_cast<node*>(NULL));		//значение по умолчанию + ссылка вперёд
-			last = last->next;						//обновляем последний
+			alloc.construct(last->next, last, static_cast<node*>(NULL));		//Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ + СЃСЃС‹Р»РєР° РІРїРµСЂС‘Рґ
+			last = last->next;						//РѕР±РЅРѕРІР»СЏРµРј РїРѕСЃР»РµРґРЅРёР№
 		}
 		chead = fictive->next;
 		alloc.deallocate(fictive, 1);
@@ -485,11 +485,11 @@ namespace task {
 		node* l = last.ptr;
 
 		if (head == f)
-			head = l;			//если удаляем из начала списка
+			head = l;			//РµСЃР»Рё СѓРґР°Р»СЏРµРј РёР· РЅР°С‡Р°Р»Р° СЃРїРёСЃРєР°
 		else
 			f->prev->next = l;
 
-		if (l == NULL)				//если удаляем из конца
+		if (l == NULL)				//РµСЃР»Рё СѓРґР°Р»СЏРµРј РёР· РєРѕРЅС†Р°
 			tail = f->prev;
 		else
 			l->prev = f->prev;
@@ -502,17 +502,17 @@ namespace task {
 			alloc.deallocate(del, 1);
 		}
 
-		return iterator(l, this); //либо last, либо next
+		return iterator(l, this); //Р»РёР±Рѕ last, Р»РёР±Рѕ next
 	}
 
 	template<class T, class Alloc>
 	void list<T, Alloc>::push_back(const T& value) {
 		node* p = alloc.allocate(1);
-		if (tail == NULL) {			//если список пуст, обновляем всё
+		if (tail == NULL) {			//РµСЃР»Рё СЃРїРёСЃРѕРє РїСѓСЃС‚, РѕР±РЅРѕРІР»СЏРµРј РІСЃС‘
 			alloc.construct(p, static_cast<node*>(NULL), static_cast<node*>(NULL), value);
 			head = tail = p;
 		}
-		else {						//если список не пуст, вставляем в конец
+		else {						//РµСЃР»Рё СЃРїРёСЃРѕРє РЅРµ РїСѓСЃС‚, РІСЃС‚Р°РІР»СЏРµРј РІ РєРѕРЅРµС†
 			tail->next = p;
 			alloc.construct(p, tail, static_cast<node*>(NULL), value);
 			tail = p;
@@ -523,11 +523,11 @@ namespace task {
 	template<class T, class Alloc>
 	void list<T, Alloc>::push_back(T&& value) {
 		node* p = alloc.allocate(1);
-		if (tail == NULL) {			//если список пуст, обновляем всё
+		if (tail == NULL) {			//РµСЃР»Рё СЃРїРёСЃРѕРє РїСѓСЃС‚, РѕР±РЅРѕРІР»СЏРµРј РІСЃС‘
 			alloc.construct(p, static_cast<node*>(NULL), static_cast<node*>(NULL), std::forward<T>(value));
 			head = tail = p;
 		}
-		else {						//если список не пуст, вставляем в конец
+		else {						//РµСЃР»Рё СЃРїРёСЃРѕРє РЅРµ РїСѓСЃС‚, РІСЃС‚Р°РІР»СЏРµРј РІ РєРѕРЅРµС†
 			tail->next = p;
 			alloc.construct(p, tail, static_cast<node*>(NULL), std::forward<T>(value));
 			tail = p;
@@ -554,11 +554,11 @@ namespace task {
 	template<class T, class Alloc>
 	void list<T, Alloc>::push_front(const T& value) {
 		node* p = alloc.allocate(1);
-		if (head == NULL) {			//если список пуст, обновляем всё
+		if (head == NULL) {			//РµСЃР»Рё СЃРїРёСЃРѕРє РїСѓСЃС‚, РѕР±РЅРѕРІР»СЏРµРј РІСЃС‘
 			alloc.construct(p, static_cast<node*>(NULL), static_cast<node*>(NULL), value);
 			head = tail = p;
 		}
-		else {						//если список не пуст, вставляем в начало
+		else {						//РµСЃР»Рё СЃРїРёСЃРѕРє РЅРµ РїСѓСЃС‚, РІСЃС‚Р°РІР»СЏРµРј РІ РЅР°С‡Р°Р»Рѕ
 			head->prev = p;
 			alloc.construct(p, static_cast<node*>(NULL), head, value);
 			head = p;
@@ -569,11 +569,11 @@ namespace task {
 	template<class T, class Alloc>
 	void list<T, Alloc>::push_front(T&& value) {
 		node* p = alloc.allocate(1);
-		if (head == NULL) {			//если список пуст, обновляем всё
+		if (head == NULL) {			//РµСЃР»Рё СЃРїРёСЃРѕРє РїСѓСЃС‚, РѕР±РЅРѕРІР»СЏРµРј РІСЃС‘
 			alloc.construct(p, static_cast<node*>(NULL), static_cast<node*>(NULL), std::forward<T>(value));
 			head = tail = p;
 		}
-		else {						//если список не пуст, вставляем в начало
+		else {						//РµСЃР»Рё СЃРїРёСЃРѕРє РЅРµ РїСѓСЃС‚, РІСЃС‚Р°РІР»СЏРµРј РІ РЅР°С‡Р°Р»Рѕ
 			head->prev = p;
 			alloc.construct(p, static_cast<node*>(NULL), head, std::forward<T>(value));
 			head = p;
@@ -601,13 +601,13 @@ namespace task {
 	template <class... Args>
 	typename list<T, Alloc>::iterator list<T, Alloc>::emplace(const_iterator pos, Args&&... args) {
 		node* p;
-		if (pos.ptr == NULL) {			//вставка в конец
+		if (pos.ptr == NULL) {			//РІСЃС‚Р°РІРєР° РІ РєРѕРЅРµС†
 			p = alloc.allocate(1);
-			if (tail == NULL) {			//если список пуст, обновляем всё
-				alloc.construct(p, static_cast<node*>(NULL), static_cast<node*>(NULL), std::forward<Args>(args)...); //forward_as_tuple - убрано
+			if (tail == NULL) {			//РµСЃР»Рё СЃРїРёСЃРѕРє РїСѓСЃС‚, РѕР±РЅРѕРІР»СЏРµРј РІСЃС‘
+				alloc.construct(p, static_cast<node*>(NULL), static_cast<node*>(NULL), std::forward<Args>(args)...); //forward_as_tuple - СѓР±СЂР°РЅРѕ
 				head = tail = p;
 			}
-			else {						//если список не пуст, вставляем в конец
+			else {						//РµСЃР»Рё СЃРїРёСЃРѕРє РЅРµ РїСѓСЃС‚, РІСЃС‚Р°РІР»СЏРµРј РІ РєРѕРЅРµС†
 				tail->next = p;
 				//alloc.construct(p, tail, static_cast<node*>(NULL), std::forward_as_tuple(std::forward<Args>(args)...));
 				alloc.construct(p, tail, static_cast<node*>(NULL), std::forward<Args>(args)...);
@@ -616,9 +616,9 @@ namespace task {
 		}
 		else {
 			p = alloc.allocate(1);
-			alloc.construct(p, pos.ptr->prev, pos.ptr, std::forward<Args>(args)...);	//значение + ссылка вперёд
-			p->prev->next = p;	//предыдущий указывает на новый
-			p->next->prev = p;	//следующий тоже
+			alloc.construct(p, pos.ptr->prev, pos.ptr, std::forward<Args>(args)...);	//Р·РЅР°С‡РµРЅРёРµ + СЃСЃС‹Р»РєР° РІРїРµСЂС‘Рґ
+			p->prev->next = p;	//РїСЂРµРґС‹РґСѓС‰РёР№ СѓРєР°Р·С‹РІР°РµС‚ РЅР° РЅРѕРІС‹Р№
+			p->next->prev = p;	//СЃР»РµРґСѓСЋС‰РёР№ С‚РѕР¶Рµ
 		}
 		++ssize;
 
@@ -629,14 +629,14 @@ namespace task {
 	template <class... Args>
 	void list<T, Alloc>::emplace_back(Args&&... args) {
 		node* p = alloc.allocate(1);
-		if (tail == NULL) {			//если список пуст, обновляем всё
+		if (tail == NULL) {			//РµСЃР»Рё СЃРїРёСЃРѕРє РїСѓСЃС‚, РѕР±РЅРѕРІР»СЏРµРј РІСЃС‘
 			//alloc.construct(p, static_cast<node*>(NULL), static_cast<node*>(NULL), std::forward_as_tuple(std::forward<Args>(args)...)); 
 
 			alloc.construct(p, static_cast<node*>(NULL), static_cast<node*>(NULL), std::forward<Args>(args)...);
 
 			head = tail = p;
 		}
-		else {						//если список не пуст, вставляем в конец
+		else {						//РµСЃР»Рё СЃРїРёСЃРѕРє РЅРµ РїСѓСЃС‚, РІСЃС‚Р°РІР»СЏРµРј РІ РєРѕРЅРµС†
 			tail->next = p;
 			//std::forward<Args>(args)...
 			//std::forward<Args>(args)
@@ -653,11 +653,11 @@ namespace task {
 	template <class... Args>
 	void list<T, Alloc>::emplace_front(Args&&... args) {
 		node* p = alloc.allocate(1);
-		if (head == NULL) {			//если список пуст, обновляем всё
+		if (head == NULL) {			//РµСЃР»Рё СЃРїРёСЃРѕРє РїСѓСЃС‚, РѕР±РЅРѕРІР»СЏРµРј РІСЃС‘
 			alloc.construct(p, static_cast<node*>(NULL), static_cast<node*>(NULL), std::forward<Args>(args)...);
 			head = tail = p;
 		}
-		else {						//если список не пуст, вставляем в начало
+		else {						//РµСЃР»Рё СЃРїРёСЃРѕРє РЅРµ РїСѓСЃС‚, РІСЃС‚Р°РІР»СЏРµРј РІ РЅР°С‡Р°Р»Рѕ
 			head->prev = p;
 			alloc.construct(p, static_cast<node*>(NULL), head, std::forward<Args>(args)...);
 			head = p;
@@ -671,16 +671,16 @@ namespace task {
 		if (count < ssize) {
 			size_t i;
 			node* n;
-			for (i = 0, n = head; i < count; i++, n = n->next); //переход к первому удаляемому
+			for (i = 0, n = head; i < count; i++, n = n->next); //РїРµСЂРµС…РѕРґ Рє РїРµСЂРІРѕРјСѓ СѓРґР°Р»СЏРµРјРѕРјСѓ
 
 			if (n != head)
-				n->prev->next = NULL;			//обрубаем список (по удаляемому)
+				n->prev->next = NULL;			//РѕР±СЂСѓР±Р°РµРј СЃРїРёСЃРѕРє (РїРѕ СѓРґР°Р»СЏРµРјРѕРјСѓ)
 			else
 				head = NULL;
 
 			tail = n->prev;
 
-			while (n != NULL) {	//удаляем лишние
+			while (n != NULL) {	//СѓРґР°Р»СЏРµРј Р»РёС€РЅРёРµ
 				node* del = n;
 				n = n->next;
 				alloc.deallocate(del, 1);
@@ -743,19 +743,19 @@ namespace task {
 						p2 = p2->next;
 					}
 
-			if (p1 != NULL || p2 != NULL) {			//если ещё что-то не добавили, добавляем и находим tail
+			if (p1 != NULL || p2 != NULL) {			//РµСЃР»Рё РµС‰С‘ С‡С‚Рѕ-С‚Рѕ РЅРµ РґРѕР±Р°РІРёР»Рё, РґРѕР±Р°РІР»СЏРµРј Рё РЅР°С…РѕРґРёРј tail
 				node* rest;
-				if (p2 != NULL) {		//если что-то осталось во втором, то будем брать из него и tail тоже
+				if (p2 != NULL) {		//РµСЃР»Рё С‡С‚Рѕ-С‚Рѕ РѕСЃС‚Р°Р»РѕСЃСЊ РІРѕ РІС‚РѕСЂРѕРј, С‚Рѕ Р±СѓРґРµРј Р±СЂР°С‚СЊ РёР· РЅРµРіРѕ Рё tail С‚РѕР¶Рµ
 					rest = p2;
 					tail = other.tail;
 				}
 				else
-					rest = p1;			//если что-то осталось в первом, берём из него, а tail не меняется
+					rest = p1;			//РµСЃР»Рё С‡С‚Рѕ-С‚Рѕ РѕСЃС‚Р°Р»РѕСЃСЊ РІ РїРµСЂРІРѕРј, Р±РµСЂС‘Рј РёР· РЅРµРіРѕ, Р° tail РЅРµ РјРµРЅСЏРµС‚СЃСЏ
 
 				last->next = rest;
 				rest->prev = last;
 			}
-			else	//если оба списка пусты, то последний добавленный - tail
+			else	//РµСЃР»Рё РѕР±Р° СЃРїРёСЃРєР° РїСѓСЃС‚С‹, С‚Рѕ РїРѕСЃР»РµРґРЅРёР№ РґРѕР±Р°РІР»РµРЅРЅС‹Р№ - tail
 				tail = last;
 
 			head = fictive->next;
@@ -780,11 +780,11 @@ namespace task {
 				tail = other.tail;
 			}
 		else {
-			other.head->prev = pos.ptr->prev;	//сцепляем начало списка
-			other.tail->next = pos.ptr;		//сцепляем конец
+			other.head->prev = pos.ptr->prev;	//СЃС†РµРїР»СЏРµРј РЅР°С‡Р°Р»Рѕ СЃРїРёСЃРєР°
+			other.tail->next = pos.ptr;		//СЃС†РµРїР»СЏРµРј РєРѕРЅРµС†
 
-			other.head->prev->next = other.head;	//предыдущий указывает на новый список (вставленный)
-			other.tail->next->prev = other.tail;	//следующий тоже указывает на него же
+			other.head->prev->next = other.head;	//РїСЂРµРґС‹РґСѓС‰РёР№ СѓРєР°Р·С‹РІР°РµС‚ РЅР° РЅРѕРІС‹Р№ СЃРїРёСЃРѕРє (РІСЃС‚Р°РІР»РµРЅРЅС‹Р№)
+			other.tail->next->prev = other.tail;	//СЃР»РµРґСѓСЋС‰РёР№ С‚РѕР¶Рµ СѓРєР°Р·С‹РІР°РµС‚ РЅР° РЅРµРіРѕ Р¶Рµ
 		}
 
 		ssize += other.ssize;
@@ -794,8 +794,8 @@ namespace task {
 
 	template<class T, class Alloc>
 	void list<T, Alloc>::remove(const T& value) {
-		T val = value; //иначе уничтожается снаружи???
-		while (head != NULL && head->value == val) {	//подчищаем головные
+		T val = value; //РёРЅР°С‡Рµ СѓРЅРёС‡С‚РѕР¶Р°РµС‚СЃСЏ СЃРЅР°СЂСѓР¶Рё???
+		while (head != NULL && head->value == val) {	//РїРѕРґС‡РёС‰Р°РµРј РіРѕР»РѕРІРЅС‹Рµ
 			node* del = head;
 			head = head->next;
 			if (head != NULL)
@@ -804,11 +804,11 @@ namespace task {
 			--ssize;
 		}
 
-		if (head == NULL)		//если всё удалили, то заменяем tail
+		if (head == NULL)		//РµСЃР»Рё РІСЃС‘ СѓРґР°Р»РёР»Рё, С‚Рѕ Р·Р°РјРµРЅСЏРµРј tail
 			tail = NULL;
 		else {
 			node* i = head->next;
-			while (i->next != NULL) {		//перебор всех, кроме головы и хвоста
+			while (i->next != NULL) {		//РїРµСЂРµР±РѕСЂ РІСЃРµС…, РєСЂРѕРјРµ РіРѕР»РѕРІС‹ Рё С…РІРѕСЃС‚Р°
 				if (i->value == val) {
 					node* del = i;
 					del->prev->next = del->next;
@@ -821,7 +821,7 @@ namespace task {
 					i = i->next;
 			}
 
-			if (tail->value == value) {		//удаление из хвоста, если надо
+			if (tail->value == value) {		//СѓРґР°Р»РµРЅРёРµ РёР· С…РІРѕСЃС‚Р°, РµСЃР»Рё РЅР°РґРѕ
 				node* del = tail;
 				tail = tail->prev;
 				tail->next = NULL;
@@ -845,9 +845,9 @@ namespace task {
 
 	template<class T, class Alloc>
 	void list<T, Alloc>::unique() {
-		if (head != tail) { //если в списке более одного элемента
+		if (head != tail) { //РµСЃР»Рё РІ СЃРїРёСЃРєРµ Р±РѕР»РµРµ РѕРґРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
 			node* i = head->next;
-			while (i->next != NULL) {		//проверяем все, между головой и хвостом
+			while (i->next != NULL) {		//РїСЂРѕРІРµСЂСЏРµРј РІСЃРµ, РјРµР¶РґСѓ РіРѕР»РѕРІРѕР№ Рё С…РІРѕСЃС‚РѕРј
 				if (i->value == i->prev->value) {
 					i->prev->next = i->next;
 					i->next->prev = i->prev;
@@ -873,17 +873,17 @@ namespace task {
 	template<class T, class Alloc>
 	void list<T, Alloc>::sort() {
 		if (head != tail) {
-			for (node* i = head; i->next != NULL; i = i->next) {	//перебираем все до предпоследнего
+			for (node* i = head; i->next != NULL; i = i->next) {	//РїРµСЂРµР±РёСЂР°РµРј РІСЃРµ РґРѕ РїСЂРµРґРїРѕСЃР»РµРґРЅРµРіРѕ
 
-				node* min = i->next;			//следующий за текущим - хранит минимум
-				for (node* j = min->next; j != NULL; j = j->next) //перебираем остальные после min (если он не последний)
-					if (j->value < min->value)		//обнаружили новый min - обновляем
+				node* min = i->next;			//СЃР»РµРґСѓСЋС‰РёР№ Р·Р° С‚РµРєСѓС‰РёРј - С…СЂР°РЅРёС‚ РјРёРЅРёРјСѓРј
+				for (node* j = min->next; j != NULL; j = j->next) //РїРµСЂРµР±РёСЂР°РµРј РѕСЃС‚Р°Р»СЊРЅС‹Рµ РїРѕСЃР»Рµ min (РµСЃР»Рё РѕРЅ РЅРµ РїРѕСЃР»РµРґРЅРёР№)
+					if (j->value < min->value)		//РѕР±РЅР°СЂСѓР¶РёР»Рё РЅРѕРІС‹Р№ min - РѕР±РЅРѕРІР»СЏРµРј
 						min = j;
 
-				if (i->value > min->value)				//если текущий больше минимума
-					std::swap(i->value, min->value);	//меняем содержимое местами
-				else										//если текущий меньше min
-					std::swap(i->next->value, min->value);	//вставляем min сразу после него
+				if (i->value > min->value)				//РµСЃР»Рё С‚РµРєСѓС‰РёР№ Р±РѕР»СЊС€Рµ РјРёРЅРёРјСѓРјР°
+					std::swap(i->value, min->value);	//РјРµРЅСЏРµРј СЃРѕРґРµСЂР¶РёРјРѕРµ РјРµСЃС‚Р°РјРё
+				else										//РµСЃР»Рё С‚РµРєСѓС‰РёР№ РјРµРЅСЊС€Рµ min
+					std::swap(i->next->value, min->value);	//РІСЃС‚Р°РІР»СЏРµРј min СЃСЂР°Р·Сѓ РїРѕСЃР»Рµ РЅРµРіРѕ
 			}
 		}
 	}
@@ -1030,7 +1030,7 @@ namespace task {
 		return ptr != other.ptr;
 	}
 
-	//доступ к итераторам
+	//РґРѕСЃС‚СѓРї Рє РёС‚РµСЂР°С‚РѕСЂР°Рј
 
 	template<class T, class Alloc>
 	typename list<T, Alloc>::iterator list<T, Alloc>::begin() {
