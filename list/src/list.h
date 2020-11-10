@@ -302,7 +302,7 @@ namespace task {
 
 	template<class T, class Alloc>
 	size_t list<T, Alloc>::max_size() const {
-		alloc.max_size();
+		return alloc.max_size();
 	}
 
 	template<class T, class Alloc>
@@ -1054,12 +1054,12 @@ namespace task {
 
 	template<class T, class Alloc>
 	typename list<T, Alloc>::reverse_iterator list<T, Alloc>::rbegin() {
-		return reverse_iterator<iterator>(static_cast<node*>(tail), const_cast<list*>(this));
+		return reverse_iterator(static_cast<node*>(tail), const_cast<list*>(this));
 	}
 
 	template<class T, class Alloc>
 	typename list<T, Alloc>::reverse_iterator list<T, Alloc>::rend() {
-		return reverse_iterator<iterator>(const_cast<node*>(head), const_cast<list*>(this));
+		return reverse_iterator(const_cast<node*>(head), const_cast<list*>(this));
 	}
 
 	template<class T, class Alloc>
