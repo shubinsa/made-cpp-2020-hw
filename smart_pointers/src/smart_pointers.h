@@ -12,9 +12,10 @@ namespace task {
 
 	template <class T>
 	struct ControlBlock {
-		ControlBlock() : sh_count(1), w_count(0) {};
+		ControlBlock(T* ptr) : sh_count(1), w_count(0), ptr(ptr) {};
 		size_t sh_count;
 		size_t w_count;
+		T* ptr;
 	};
 
 
@@ -72,21 +73,21 @@ namespace task {
 	template <class T>
 	class SharedPtr {
 	public:
-		SharedPtr() :CB(), ptr(nullptr) {};
+		SharedPtr() :CB(nullptr) {};
 		SharedPtr(T* ptr);
 		SharedPtr(const SharedPtr<T>&);
 		SharedPtr(SharedPtr<T>&&);
 		SharedPtr(const WeakPtr<T>&);
 		SharedPtr<T>& operator=(const SharedPtr<T>& other);
 		SharedPtr<T>& operator=(SharedPtr<T>&& other);
-		T* operator->() { return ptr; }
-		T& operator*() { return *(ptr); }
-		const T& operator*() const { return *(ptr); }
+		T* operator->() { return (CB ? CB->ptr : nullptr); }
+		T& operator*() { return *(CB->ptr); }
+		const T& operator*() const { return *(CB->ptr); }
 
 		void reset();
 		void reset(T* ptr);
 		void swap(SharedPtr<T>& other);
-		T* get() { return (ptr); }
+		T* get() { return (CB ? CB->ptr : nullptr); }
 
 		size_t use_count();
 
@@ -95,31 +96,28 @@ namespace task {
 		friend WeakPtr<T>;
 	private:
 		ControlBlock<T>* CB;
-		T* ptr;
 	};
 
 	template <class T>
-	SharedPtr<T>::SharedPtr(T* ptr) :ptr(ptr) {
-		CB = new ControlBlock<T>;
+	SharedPtr<T>::SharedPtr(T* ptr) {
+		CB = new ControlBlock<T>(ptr);
 	}
 
 	template <class T>
-	SharedPtr<T>::SharedPtr(const SharedPtr<T>& other) : CB(other.CB) , ptr(other.ptr) {
+	SharedPtr<T>::SharedPtr(const SharedPtr<T>& other) : CB(other.CB) {
 		if (CB)
 			++(CB->sh_count);
 	}
 
 	template <class T>
-	SharedPtr<T>::SharedPtr(SharedPtr<T>&& other) : CB(other.CB), ptr(other.ptr) {
+	SharedPtr<T>::SharedPtr(SharedPtr<T>&& other) : CB(other.CB) {
 		other.CB = nullptr;
-		other.ptr = nullptr;
 	}
 
 	template <class T>
-	SharedPtr<T>::SharedPtr(const WeakPtr<T>& weak) : CB(weak.CB), ptr(weak.ptr) {
-		if (ptr) 
+	SharedPtr<T>::SharedPtr(const WeakPtr<T>& weak) : CB(weak.CB) {
+		if (CB)
 			++(CB->sh_count);
-
 	}
 
 	template <class T>
@@ -127,9 +125,9 @@ namespace task {
 		if (CB) {
 			--(CB->sh_count);
 			if (CB->sh_count == 0) {
-				delete ptr;
-				ptr = nullptr;
-				if (CB->w_count == 0) {
+				delete CB->ptr;
+				CB->ptr = nullptr;
+				if (CB->w_count == 0) { 
 					delete CB;
 					CB = nullptr;
 				}
@@ -143,8 +141,7 @@ namespace task {
 			this->~SharedPtr();
 
 			CB = other.CB;
-			ptr = other.ptr;
-			if (CB) 
+			if (CB)
 				++(CB->sh_count);
 		}
 
@@ -156,10 +153,8 @@ namespace task {
 		this->~SharedPtr();
 
 		CB = other.CB;
-		ptr = other.ptr;
 
 		other.CB = nullptr;
-		other.ptr = nullptr;
 
 		return *this;
 	}
@@ -172,14 +167,12 @@ namespace task {
 	template <class T>
 	void SharedPtr<T>::reset(T* ptr) {
 		this->~SharedPtr();
-		SharedPtr<T>::ptr = ptr;
-		CB = new ControlBlock<T>;
+		CB = new ControlBlock<T>(ptr);
 	}
 
 	template <class T>
 	void SharedPtr<T>::swap(SharedPtr<T>& other) {
 		std::swap(CB, other.CB);
-		std::swap(ptr, other.ptr);
 	}
 
 	template <class T>
@@ -194,7 +187,7 @@ namespace task {
 	template <class T>
 	class WeakPtr {
 	public:
-		WeakPtr():CB(nullptr), ptr(nullptr) {};
+		WeakPtr() :CB(nullptr) {};
 		WeakPtr(const SharedPtr<T>& shared);
 		WeakPtr(const WeakPtr<T>& other);
 		WeakPtr(WeakPtr<T>&& other);
@@ -209,41 +202,37 @@ namespace task {
 
 		void reset();
 		void swap(WeakPtr& other);
-		T* get() { return CB->ptr; }
+		T* get() { return (CB ? CB->ptr : nullptr); }
 
 		~WeakPtr();
 		friend SharedPtr<T>;
 	private:
 		ControlBlock<T>* CB;
-		T* ptr;
 	};
 
 
 	template <class T>
-	WeakPtr<T>::WeakPtr(const WeakPtr<T>& other) :CB(other.CB), ptr(other.ptr) {
+	WeakPtr<T>::WeakPtr(const WeakPtr<T>& other) :CB(other.CB) {
 		if (CB)
 			++(CB->w_count);
 	}
 
 	template <class T>
-	WeakPtr<T>::WeakPtr(const SharedPtr<T>& shared) :CB(shared.CB), ptr(shared.ptr) {
+	WeakPtr<T>::WeakPtr(const SharedPtr<T>& shared) :CB(shared.CB) {
 		if (CB)
 			++(CB->w_count);
 	}
 
 	template <class T>
-	WeakPtr<T>::WeakPtr(WeakPtr<T>&& other) : CB(other.CB), ptr(other.ptr) {
+	WeakPtr<T>::WeakPtr(WeakPtr<T>&& other) :CB(other.CB) {
 		other.CB = nullptr;
-		other.ptr = nullptr;
 	}
 
 	template <class T>
 	WeakPtr<T>& WeakPtr<T>::operator=(WeakPtr<T>&& other) {
 		this->~WeakPtr();
 		CB = other.CB;
-		ptr = other.ptr;
 		other.CB = nullptr;
-		other.ptr = nullptr;
 	}
 
 	template <class T>
@@ -252,11 +241,9 @@ namespace task {
 			this->~WeakPtr();
 
 			CB = other.CB;
-			
-			if (CB) {
+
+			if (CB)
 				++(CB->w_count);
-				ptr = other.ptr;
-			}
 		}
 
 		return *this;
@@ -266,11 +253,10 @@ namespace task {
 	WeakPtr<T>& WeakPtr<T>::operator=(const SharedPtr<T>& shared) {
 		this->~WeakPtr();
 		CB = shared.CB;
-		
-		if (CB) {
+
+		if (CB)
 			++(CB->w_count);
-			ptr = shared.ptr;
-		}
+
 		return *this;
 	}
 
@@ -286,7 +272,7 @@ namespace task {
 
 	template <class T>
 	SharedPtr<T> WeakPtr<T>::lock() {
-		return (CB->sh_count == 0 ? SharedPtr<T>() : SharedPtr<T>(*this));
+		return ((CB ? (CB->sh_count == 0) : true) ? SharedPtr<T>() : SharedPtr<T>(*this));
 	}
 
 	template <class T>
@@ -297,14 +283,15 @@ namespace task {
 	template <class T>
 	void WeakPtr<T>::swap(WeakPtr& other) {
 		std::swap(CB, other.CB);
-		std::swap(ptr, other.ptr);
 	}
 
+	//в этой функции хотел написать другое условие, но не прохожу по памяти
+	//хотя кажется, что контрольный блок должен быть, чтобы weakptr'ы знали друг о друге
 	template <class T>
 	WeakPtr<T>::~WeakPtr() {
 		if (CB) {
 			--(CB->w_count);
-			if (CB->sh_count == 0 && CB->w_count == 0) {
+			if (CB->sh_count == 0 && CB->w_count == 0){
 				delete CB;
 				CB = nullptr;
 			}
