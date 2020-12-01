@@ -9,32 +9,22 @@ struct iterate_tuple
 {
 	static void next(std::tuple<Args...>& t, Callback& callback)
 	{
-		// Уменьшаем позицию и рекурсивно вызываем этот же метод 
+		// Decrementing position and recursive calling same method
 		iterate_tuple<index - 1, Callback, Args...>::next(t, callback);
 
-		// Вызываем обработчик и передаем ему позицию и значение элемента
+		// Call handler (position, function)
 		callback(index, std::get<index>(t));
 
 	}
 };
 
-// Частичная специализация для индекса 0 (завершает рекурсию)
+// Partial specialization for the index 0 (end of the recursion)
 template<typename Callback, typename... Args>
 struct iterate_tuple<0, Callback, Args...>
 {
 	static void next(std::tuple<Args...>& t, Callback& callback)
 	{
 		callback(0, std::get<0>(t));
-	}
-};
-
-// Частичная специализация для индекса -1 (пустой кортеж)
-template<typename Callback, typename... Args>
-struct iterate_tuple<-1, Callback, Args...>
-{
-	static void next(std::tuple<Args...>& t, Callback& callback)
-	{
-		// ничего не делаем
 	}
 };
 
