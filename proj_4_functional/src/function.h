@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <memory>
+#include <exception>
 
 template <class Unused>
 class function;
@@ -38,7 +39,7 @@ struct callable : callableBase<ReturnType(Args...)> {
 };
 
 template <class ReturnType, class ...Args>
-class ::function<ReturnType(Args...)> {
+class function<ReturnType(Args...)> {
 public:
 	typedef ReturnType result_type;
 	typedef std::unique_ptr<callableBase<result_type(Args...)>> SmartPtr;
@@ -74,7 +75,7 @@ public:
 	function operator=(const function& other) {
 		if (&other != this) {
 			ptr.~unique_ptr();
-			ptr = std::make_unique<callableBase<ReturnType(Args)>>(*(other.ptr));
+			ptr = std::make_unique<callableBase<ReturnType(Args...)>>(*(other.ptr));
 		}
 		return *this;
 	};
@@ -121,7 +122,7 @@ public:
 
 	ReturnType operator()(Args... arg) const {
 		if (!*this == true) 
-			throw std::exception("bad_function_call");
+			throw std::exception();
 		return ptr->operator()(arg...);
 	}
 
